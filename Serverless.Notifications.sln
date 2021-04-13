@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{03630A7A-75B5-4F68-9D11-8DD081601AE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serverless.Notifications.AzureFunctions", "src\Serverless.Notifications.AzureFunctions\Serverless.Notifications.AzureFunctions.csproj", "{EBE1C1D8-D9F6-4B96-BCAD-1EA6D7C2534C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serverless.Notifications.AzureFunctions", "src\Serverless.Notifications.AzureFunctions\Serverless.Notifications.AzureFunctions.csproj", "{EBE1C1D8-D9F6-4B96-BCAD-1EA6D7C2534C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serverless.Notifications.Domain", "src\Serverless.Notifications.Domain\Serverless.Notifications.Domain.csproj", "{69079DB1-5C69-4296-AEE7-91D8FB1AF813}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serverless.Notifications.Domain", "src\Serverless.Notifications.Domain\Serverless.Notifications.Domain.csproj", "{69079DB1-5C69-4296-AEE7-91D8FB1AF813}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serverless.Notifications.Application", "src\Serverless.Notifications.Application\Serverless.Notifications.Application.csproj", "{F352EF95-5B1C-40E3-A82B-9BE9C83DBDA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serverless.Notifications.Application", "src\Serverless.Notifications.Application\Serverless.Notifications.Application.csproj", "{F352EF95-5B1C-40E3-A82B-9BE9C83DBDA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serverless.Notifications.Infrastructure", "src\Serverless.Notifications.Infrastructure\Serverless.Notifications.Infrastructure.csproj", "{D3A43177-4AD7-47C2-8C97-B3E0CED3C4CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serverless.Notifications.Infrastructure", "src\Serverless.Notifications.Infrastructure\Serverless.Notifications.Infrastructure.csproj", "{D3A43177-4AD7-47C2-8C97-B3E0CED3C4CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
