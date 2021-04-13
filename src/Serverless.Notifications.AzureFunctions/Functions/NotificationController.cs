@@ -1,12 +1,12 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Models;
-using System.Threading.Tasks;
 
-namespace Serverless.Notifications.Api
+namespace Serverless.Notifications.AzureFunctions.Functions
 {
     public class NotificationController
     {

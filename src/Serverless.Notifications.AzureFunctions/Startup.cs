@@ -1,10 +1,11 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Serverless.Notifications.Application;
+using Serverless.Notifications.AzureFunctions;
 using Serverless.Notifications.Infrastructure;
 
-[assembly: FunctionsStartup(typeof(Serverless.Notifications.Api.Startup))]
-namespace Serverless.Notifications.Api
+[assembly: FunctionsStartup(typeof(Startup))]
+namespace Serverless.Notifications.AzureFunctions
 {
     public class Startup : FunctionsStartup
     {
