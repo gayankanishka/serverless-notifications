@@ -1,23 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Models;
 using System.Threading.Tasks;
 
 namespace Serverless.Notifications.Api
 {
-    public static class NotificationController
+    public class NotificationController
     {
-        [FunctionName("notifications")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
-            ILogger log, [FromBody]Notification notification)
+        private readonly INotificationPoolQueue _notificationPool;
+
+        public NotificationController(INotificationPoolQueue notificationPool)
         {
-            log.LogInformation("Notification Id",notification.Id);
-            log.LogInformation("Notification Body",notification.Body);
+            _notificationPool = notificationPool;
+        }
 
+        [FunctionName("PostNotifications")]
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "notifications")]
+            [FromBody]Notification notification)
+        {
+            string message = JsonConvert.SerializeObject(notification);
 
+            await _notificationPool.InsertMessageAsync(message);
 
             return new AcceptedResult("notifications", notification.Id);
         }
