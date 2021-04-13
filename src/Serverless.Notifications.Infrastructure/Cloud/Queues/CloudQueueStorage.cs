@@ -10,7 +10,10 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Queues
 
         public CloudQueueStorage(string connectionString, string queueName)
         {
-            _queueClient = new QueueClient(connectionString, queueName);
+            _queueClient = new QueueClient(connectionString, queueName, new QueueClientOptions
+            {
+                MessageEncoding = QueueMessageEncoding.Base64
+            });
         }
 
         /// <inheritdoc cref="InsertMessageAsync"/>

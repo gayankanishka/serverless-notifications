@@ -15,7 +15,7 @@ namespace Serverless.Notifications.Infrastructure
                 new CloudQueueStorage(connectionString, "notification-pool"));
 
             services.AddScoped<INotificationScheduleQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "Scheduled-notifications"));
+                new CloudQueueStorage(connectionString, "scheduled-notifications"));
 
             services.AddScoped<ISmsQueue, CloudQueueStorage>(_ =>
                 new CloudQueueStorage(connectionString, "sms"));
