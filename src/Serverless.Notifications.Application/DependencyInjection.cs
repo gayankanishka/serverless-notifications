@@ -9,6 +9,8 @@ namespace Serverless.Notifications.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<INotificationPoolRouter, NotificationPoolRouter>();
+            services.AddScoped<IScheduleProcessor, ScheduleProcessor>();
+
             return services;
         }
     }
