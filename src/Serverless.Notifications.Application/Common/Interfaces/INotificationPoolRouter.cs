@@ -5,6 +5,6 @@ namespace Serverless.Notifications.Application.Common.Interfaces
 {
     public interface INotificationPoolRouter
     {
-        Task RouteNotification(Notification notification);
+        Task RouteNotification(Notification notification, bool scheduleEnabled = true);
     }
 }
