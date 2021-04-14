@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Models;
+using System.Threading.Tasks;
 
 namespace Serverless.Notifications.AzureFunctions.Functions
 {

@@ -23,10 +23,10 @@ namespace Serverless.Notifications.Application.Services
 
         public async Task RouteNotification(Notification notification, bool scheduleEnabled = true)
         {
-            string message = JsonConvert.SerializeObject(notification);
-
             if (notification.IsScheduled && scheduleEnabled)
             {
+                string message = JsonConvert.SerializeObject(notification);
+
                 await _notificationScheduleQueue.SendMessageAsync(message);
                 return;
             }
@@ -34,10 +34,10 @@ namespace Serverless.Notifications.Application.Services
             switch (notification.NotificationType)
             {
                 case NotificationType.SMS:
-                    await _smsQueue.SendMessageAsync(message);
+                    await _smsQueue.SendMessageAsync(notification.Body);
                     break;
                 case NotificationType.Email:
-                    await _emailQueue.SendMessageAsync(message);
+                    await _emailQueue.SendMessageAsync(notification.Body);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

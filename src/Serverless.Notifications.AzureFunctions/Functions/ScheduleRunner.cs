@@ -1,6 +1,6 @@
 using Microsoft.Azure.WebJobs;
-using System.Threading.Tasks;
 using Serverless.Notifications.Application.Common.Interfaces;
+using System.Threading.Tasks;
 
 namespace Serverless.Notifications.AzureFunctions.Functions
 {
@@ -14,9 +14,9 @@ namespace Serverless.Notifications.AzureFunctions.Functions
         }
 
         [FunctionName("ScheduleRunner")]
-        public async Task Run([TimerTrigger("0 1 * * *")]TimerInfo myTimer)
+        public async Task Run([TimerTrigger("* * * * *")]TimerInfo myTimer)
         {
-            await _scheduleProcessor.Process();
+            await _scheduleProcessor.ProcessQueueAsync();
         }
     }
 }
