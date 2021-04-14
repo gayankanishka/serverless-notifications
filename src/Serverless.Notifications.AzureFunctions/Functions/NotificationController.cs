@@ -1,10 +1,10 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Models;
+using System.Threading.Tasks;
 
 namespace Serverless.Notifications.AzureFunctions.Functions
 {
@@ -19,12 +19,12 @@ namespace Serverless.Notifications.AzureFunctions.Functions
 
         [FunctionName("PostNotifications")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "notifications")]
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "notifications")]
             [FromBody]Notification notification)
         {
             string message = JsonConvert.SerializeObject(notification);
 
-            await _notificationPool.InsertMessageAsync(message);
+            await _notificationPool.SendMessageAsync(message);
 
             return new AcceptedResult("notifications", notification.Id);
         }
