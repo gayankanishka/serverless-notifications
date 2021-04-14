@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Infrastructure.Cloud.Queues;
+using Serverless.Notifications.Infrastructure.Services;
 
 namespace Serverless.Notifications.Infrastructure
 {
@@ -22,6 +23,8 @@ namespace Serverless.Notifications.Infrastructure
 
             services.AddScoped<IEmailQueue, CloudQueueStorage>(_ =>
                 new CloudQueueStorage(connectionString, "email"));
+
+            services.AddScoped<ITwilioSmsService, TwilioSmsService>();
 
             return services;
         }

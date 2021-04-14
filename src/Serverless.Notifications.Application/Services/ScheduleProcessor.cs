@@ -44,7 +44,7 @@ namespace Serverless.Notifications.Application.Services
 
         private async Task ProcessMessageAsync(QueueMessage message)
         {
-            if (message.DequeueCount >= 10)
+            if (message.DequeueCount >= 5)
             {
                 await _notificationScheduleQueue.SendMessageToPoisonQueueAsync(message);
                 return;
