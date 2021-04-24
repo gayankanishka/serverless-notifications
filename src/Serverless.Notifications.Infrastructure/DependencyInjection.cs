@@ -12,17 +12,8 @@ namespace Serverless.Notifications.Infrastructure
         {
             string connectionString = configuration.GetSection("AzureWebJobsStorage").Value;
 
-            services.AddScoped<INotificationPoolQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "notification-pool"));
-
-            services.AddScoped<INotificationScheduleQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "scheduled-notifications"));
-
-            services.AddScoped<ISmsQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "sms"));
-
-            services.AddScoped<IEmailQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "email"));
+            services.AddScoped<ICloudQueueStorage, CloudQueueStorage>(_ =>
+                new CloudQueueStorage(connectionString));
 
             services.AddScoped<ITwilioSmsService, TwilioSmsService>();
 
