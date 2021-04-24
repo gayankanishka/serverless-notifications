@@ -1,5 +1,5 @@
-﻿using Azure.Storage.Queues.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Azure.Storage.Queues.Models;
 
 namespace Serverless.Notifications.Application.Common.Interfaces
 {

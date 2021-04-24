@@ -1,5 +1,5 @@
-﻿using Serverless.Notifications.Domain.Enums;
-using System;
+﻿using System;
+using Serverless.Notifications.Domain.Enums;
 
 namespace Serverless.Notifications.Domain.Models
 {

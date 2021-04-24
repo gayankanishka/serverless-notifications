@@ -1,7 +1,7 @@
-﻿using Azure.Storage.Queues;
+﻿using System.Threading.Tasks;
+using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Serverless.Notifications.Application.Common.Interfaces;
-using System.Threading.Tasks;
 
 namespace Serverless.Notifications.Infrastructure.Cloud.Queues
 {

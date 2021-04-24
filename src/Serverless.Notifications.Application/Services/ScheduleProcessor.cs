@@ -1,10 +1,10 @@
-﻿using Azure.Storage.Queues.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Azure.Storage.Queues.Models;
 using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Serverless.Notifications.Application.Services
 {

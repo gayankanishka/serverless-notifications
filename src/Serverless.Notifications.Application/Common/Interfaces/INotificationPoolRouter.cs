@@ -1,5 +1,5 @@
-﻿using Serverless.Notifications.Domain.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Serverless.Notifications.Domain.Models;
 
 namespace Serverless.Notifications.Application.Common.Interfaces
 {

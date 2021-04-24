@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Enums;
 using Serverless.Notifications.Domain.Models;
-using System;
-using System.Threading.Tasks;
 
 namespace Serverless.Notifications.Application.Services
 {

@@ -1,8 +1,8 @@
+using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Models;
-using System.Threading.Tasks;
 
 namespace Serverless.Notifications.AzureFunctions.Functions
 {
@@ -16,7 +16,7 @@ namespace Serverless.Notifications.AzureFunctions.Functions
         }
 
         [FunctionName("SmsProcessor")]
-        public async Task Run([QueueTrigger("sms")]string queueMessage)
+        public async Task Run([QueueTrigger("sms")] string queueMessage)
         {
             Sms sms = JsonConvert.DeserializeObject<Sms>(queueMessage);
             await _twilioSmsService.SendAsync(sms);

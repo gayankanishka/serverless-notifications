@@ -16,7 +16,7 @@ namespace Serverless.Notifications.AzureFunctions.Functions
         }
 
         [FunctionName("NotificationRouter")]
-        public async Task Run([QueueTrigger("notification-pool")]string queueMessage)
+        public async Task Run([QueueTrigger("notification-pool")] string queueMessage)
         {
             Notification notification = JsonConvert.DeserializeObject<Notification>(queueMessage);
             await _notificationPoolRouter.RouteNotification(notification);
