@@ -33,7 +33,7 @@ namespace Serverless.Notifications.Application.Services
 
             switch (notification.NotificationType)
             {
-                case NotificationType.SMS:
+                case NotificationType.Sms:
                     await _smsQueue.SendMessageAsync(notification.Body);
                     break;
                 case NotificationType.Email:
