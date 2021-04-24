@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Infrastructure.Cloud.Queues;
+using Serverless.Notifications.Infrastructure.Cloud.Tables;
 using Serverless.Notifications.Infrastructure.Services;
 
 namespace Serverless.Notifications.Infrastructure
@@ -12,6 +13,9 @@ namespace Serverless.Notifications.Infrastructure
         {
             string connectionString = configuration.GetSection("AzureWebJobsStorage").Value;
 
+            services.AddScoped<ICloudStorageTable, CloudStorageTable>(_ =>
+                new CloudStorageTable(connectionString));
+            
             services.AddScoped<ICloudQueueStorage, CloudQueueStorage>(_ =>
                 new CloudQueueStorage(connectionString));
 
