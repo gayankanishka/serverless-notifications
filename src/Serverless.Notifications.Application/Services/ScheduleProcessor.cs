@@ -10,12 +10,14 @@ namespace Serverless.Notifications.Application.Services
 {
     public class ScheduleProcessor : IScheduleProcessor
     {
-        private readonly INotificationScheduleQueue _notificationScheduleQueue;
+        private const string SCHEDULE_QUEUE_NAME = "scheduled-notifications";
+
+        private readonly ICloudQueueStorage _cloudQueueStorage;
         private readonly INotificationPoolRouter _notificationPoolRouter;
 
-        public ScheduleProcessor(INotificationScheduleQueue notificationScheduleQueue, INotificationPoolRouter notificationPoolRouter)
+        public ScheduleProcessor(ICloudQueueStorage cloudQueueStorage, INotificationPoolRouter notificationPoolRouter)
         {
-            _notificationScheduleQueue = notificationScheduleQueue;
+            _cloudQueueStorage = cloudQueueStorage;
             _notificationPoolRouter = notificationPoolRouter;
         }
 
@@ -24,7 +26,7 @@ namespace Serverless.Notifications.Application.Services
             while (true)
             {
                 List<Task> tasks = new List<Task>();
-                QueueMessage[] messages = await _notificationScheduleQueue.ReceiveMessagesAsync();
+                QueueMessage[] messages = await _cloudQueueStorage.ReceiveMessagesAsync(SCHEDULE_QUEUE_NAME);
 
                 foreach (QueueMessage message in messages)
                 {
@@ -33,9 +35,9 @@ namespace Serverless.Notifications.Application.Services
 
                 await Task.WhenAll(tasks);
 
-                PeekedMessage[] peekedMessages = await _notificationScheduleQueue.PeekMessagesAsync();
+                PeekedMessage[] peekedMessages = await _cloudQueueStorage.PeekMessagesAsync(SCHEDULE_QUEUE_NAME);
 
-                if (await _notificationScheduleQueue.GetApproximateMessagesCount() == 0 || peekedMessages.Length == 0)
+                if (await _cloudQueueStorage.GetApproximateMessagesCount(SCHEDULE_QUEUE_NAME) == 0 || peekedMessages.Length == 0)
                 {
                     break;
                 }
@@ -46,7 +48,7 @@ namespace Serverless.Notifications.Application.Services
         {
             if (message.DequeueCount >= 5)
             {
-                await _notificationScheduleQueue.SendMessageToPoisonQueueAsync(message);
+                await _cloudQueueStorage.SendMessageToPoisonQueueAsync(SCHEDULE_QUEUE_NAME, message);
                 return;
             }
 
@@ -59,7 +61,7 @@ namespace Serverless.Notifications.Application.Services
 
             await _notificationPoolRouter.RouteNotification(notification, false);
 
-            await _notificationScheduleQueue.DeleteMessagesAsync(message);
+            await _cloudQueueStorage.DeleteMessagesAsync(SCHEDULE_QUEUE_NAME, message);
         }
     }
 }

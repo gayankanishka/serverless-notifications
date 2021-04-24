@@ -12,11 +12,11 @@ namespace Serverless.Notifications.AzureFunctions.Functions
 {
     public class NotificationController
     {
-        private readonly INotificationPoolQueue _notificationPool;
+        private readonly ICloudQueueStorage _cloudQueueStorage;
 
-        public NotificationController(INotificationPoolQueue notificationPool)
+        public NotificationController(ICloudQueueStorage cloudQueueStorage)
         {
-            _notificationPool = notificationPool;
+            _cloudQueueStorage = cloudQueueStorage;
         }
 
         [FunctionName("PostNotifications")]
@@ -28,7 +28,7 @@ namespace Serverless.Notifications.AzureFunctions.Functions
             string requestBody = await new StreamReader(request.Body).ReadToEndAsync();
             Notification notification = JsonConvert.DeserializeObject<Notification>(requestBody);
 
-            await _notificationPool.SendMessageAsync(requestBody);
+            await _cloudQueueStorage.SendMessageAsync("notification-pool", requestBody);
 
             return new AcceptedResult("notifications", notification.Id);
         }
