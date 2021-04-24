@@ -11,21 +11,22 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Tables
         private readonly CloudTableClient _cloudTableClient;
 
         public string TableName { get; set; }
-        
+        public string PartitionKey { get; set; }
+
         public CloudStorageTable(string connectionString)
         {
             CloudStorageAccount cloudStorageAccount = CreateStorageAccountFromConnectionString(connectionString);
             _cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
         }
         
-        public async Task<T> GetTableEntity<T>(string partitionKey, string rowKey)
+        public async Task<T> GetTableEntityAsync<T>(string rowKey, string partitionKey = null)
             where T : TableEntity
         {
             try
             {
                 CloudTable table = _cloudTableClient.GetTableReference(TableName);
 
-                TableOperation retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
+                TableOperation retrieveOperation = TableOperation.Retrieve<T>(partitionKey ?? PartitionKey, rowKey);
                 TableResult result = await table.ExecuteAsync(retrieveOperation);
                 return result.Result as T;
             }
@@ -35,7 +36,7 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Tables
             }
         }
         
-        public async Task<List<T>> GetAllTableEntitiesAsync<T>(string partitionKey) 
+        public async Task<List<T>> GetAllTableEntitiesAsync<T>(string partitionKey = null) 
             where T : TableEntity, new()
         {
             try
@@ -43,7 +44,7 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Tables
                 CloudTable table = _cloudTableClient.GetTableReference(TableName);
 
                 TableQuery<T> partitionScanQuery =
-                    new TableQuery<T>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey));
+                    new TableQuery<T>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey ?? PartitionKey));
 
                 TableContinuationToken token = null;
                 List<T> entities = new List<T>();

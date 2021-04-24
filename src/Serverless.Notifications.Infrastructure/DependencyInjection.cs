@@ -16,6 +16,8 @@ namespace Serverless.Notifications.Infrastructure
             services.AddScoped<ICloudStorageTable, CloudStorageTable>(_ =>
                 new CloudStorageTable(connectionString));
             
+            services.AddScoped<ITableConfiguration, TableConfiguration>();
+
             services.AddScoped<ICloudQueueStorage, CloudQueueStorage>(_ =>
                 new CloudQueueStorage(connectionString));
 

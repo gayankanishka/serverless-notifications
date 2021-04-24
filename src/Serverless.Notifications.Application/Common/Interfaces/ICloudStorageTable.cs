@@ -7,11 +7,13 @@ namespace Serverless.Notifications.Application.Common.Interfaces
     public interface ICloudStorageTable
     {
         string TableName { get; set; }
+        
+        public string PartitionKey { get; set; }
 
-        Task<T> GetTableEntity<T>(string partitionKey, string rowKey) 
+        Task<T> GetTableEntityAsync<T>(string rowKey, string partitionKey = null) 
             where T : TableEntity;
 
-        Task<List<T>> GetAllTableEntitiesAsync<T>(string partitionKey)
+        Task<List<T>> GetAllTableEntitiesAsync<T>(string partitionKey = null)
             where T : TableEntity, new();
     }
 }
