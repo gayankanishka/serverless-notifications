@@ -6,19 +6,38 @@ using Serverless.Notifications.Application.Common.Interfaces;
 
 namespace Serverless.Notifications.Infrastructure.Cloud.Tables
 {
+    /// <inheritdoc/>
     public class CloudStorageTable : ICloudStorageTable
     {
+        #region Private Fields
+
         private readonly CloudTableClient _cloudTableClient;
 
+        #endregion
+
+        #region Public Members
+
+        /// <inheritdoc/>
         public string TableName { get; set; }
+        
+        /// <inheritdoc/>
         public string PartitionKey { get; set; }
+
+        #endregion
+        
+        #region Constructor
 
         public CloudStorageTable(string connectionString)
         {
             CloudStorageAccount cloudStorageAccount = CreateStorageAccountFromConnectionString(connectionString);
             _cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
         }
+
+        #endregion
         
+        #region Table Storage Operations
+
+        /// <inheritdoc/>
         public async Task<T> GetTableEntityAsync<T>(string rowKey, string partitionKey = null)
             where T : TableEntity
         {
@@ -36,6 +55,7 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Tables
             }
         }
         
+        /// <inheritdoc/>
         public async Task<List<T>> GetAllTableEntitiesAsync<T>(string partitionKey = null) 
             where T : TableEntity, new()
         {
@@ -64,7 +84,11 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Tables
                 throw;
             }
         }
-        
+
+        #endregion
+
+        #region Helper Methods
+
         private CloudStorageAccount CreateStorageAccountFromConnectionString(string storageConnectionString)
         {
             try
@@ -76,5 +100,7 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Tables
                 throw;
             }
         }
+
+        #endregion
     }
 }
