@@ -8,19 +8,36 @@ using Serverless.Notifications.Domain.Models;
 
 namespace Serverless.Notifications.Application.Services
 {
+    /// <inheritdoc/>
     public class ScheduleProcessor : IScheduleProcessor
     {
+        #region Private Fields
+
         private const string SCHEDULE_QUEUE_NAME = "scheduled-notifications";
 
         private readonly ICloudQueueStorage _cloudQueueStorage;
         private readonly INotificationPoolRouter _notificationPoolRouter;
 
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructs with DI.
+        /// </summary>
+        /// <param name="cloudQueueStorage"></param>
+        /// <param name="notificationPoolRouter"></param>
         public ScheduleProcessor(ICloudQueueStorage cloudQueueStorage, INotificationPoolRouter notificationPoolRouter)
         {
             _cloudQueueStorage = cloudQueueStorage;
             _notificationPoolRouter = notificationPoolRouter;
         }
 
+        #endregion
+
+        #region Schedule Processor operations
+
+        /// <inheritdoc/>
         public async Task ProcessQueueAsync()
         {
             while (true)
@@ -44,6 +61,10 @@ namespace Serverless.Notifications.Application.Services
             }
         }
 
+        #endregion
+
+        #region Helper Methods
+
         private async Task ProcessMessageAsync(QueueMessage message)
         {
             if (message.DequeueCount >= 5)
@@ -63,5 +84,7 @@ namespace Serverless.Notifications.Application.Services
 
             await _cloudQueueStorage.DeleteMessagesAsync(SCHEDULE_QUEUE_NAME, message);
         }
+
+        #endregion
     }
 }
