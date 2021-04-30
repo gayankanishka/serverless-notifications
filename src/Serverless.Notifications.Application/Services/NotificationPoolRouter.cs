@@ -9,18 +9,35 @@ using Serverless.Notifications.Domain.Models;
 
 namespace Serverless.Notifications.Application.Services
 {
+    /// <inheritdoc/>
     public class NotificationPoolRouter : INotificationPoolRouter
     {
+        #region Private Fields
+
         private readonly ICloudQueueStorage _cloudQueueStorage;
         private readonly ITableConfiguration _tableConfiguration;
 
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructs with DI.
+        /// </summary>
+        /// <param name="notificationScheduleQueue"></param>
+        /// <param name="tableConfiguration"></param>
         public NotificationPoolRouter(ICloudQueueStorage notificationScheduleQueue, ITableConfiguration tableConfiguration)
         {
             _cloudQueueStorage = notificationScheduleQueue;
             _tableConfiguration = tableConfiguration;
         }
 
-        public async Task RouteNotification(Notification notification, bool scheduleEnabled = true)
+        #endregion
+
+        #region Notification Router Operations
+
+        /// <inheritdoc/>
+        public async Task RouteNotificationAsync(Notification notification, bool scheduleEnabled = true)
         {
             string queueName;
 
@@ -47,5 +64,7 @@ namespace Serverless.Notifications.Application.Services
             await _cloudQueueStorage.CreateQueueIfNotExistsAsync(queueName);
             await _cloudQueueStorage.SendMessageAsync(queueName, notification.Body);
         }
+
+        #endregion
     }
 }

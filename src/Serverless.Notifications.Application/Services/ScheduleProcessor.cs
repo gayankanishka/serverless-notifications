@@ -37,7 +37,7 @@ namespace Serverless.Notifications.Application.Services
 
                 PeekedMessage[] peekedMessages = await _cloudQueueStorage.PeekMessagesAsync(SCHEDULE_QUEUE_NAME);
 
-                if (await _cloudQueueStorage.GetApproximateMessagesCount(SCHEDULE_QUEUE_NAME) == 0 || peekedMessages.Length == 0)
+                if (await _cloudQueueStorage.GetApproximateMessagesCountAsync(SCHEDULE_QUEUE_NAME) == 0 || peekedMessages.Length == 0)
                 {
                     break;
                 }
@@ -59,7 +59,7 @@ namespace Serverless.Notifications.Application.Services
                 return;
             }
 
-            await _notificationPoolRouter.RouteNotification(notification, false);
+            await _notificationPoolRouter.RouteNotificationAsync(notification, false);
 
             await _cloudQueueStorage.DeleteMessagesAsync(SCHEDULE_QUEUE_NAME, message);
         }

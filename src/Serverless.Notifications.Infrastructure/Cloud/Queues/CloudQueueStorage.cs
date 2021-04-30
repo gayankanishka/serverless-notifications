@@ -76,7 +76,7 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Queues
         }
 
         /// <inheritdoc/>
-        public async Task<int> GetApproximateMessagesCount(string queueName)
+        public async Task<int> GetApproximateMessagesCountAsync(string queueName)
         {
             ThrowIfNotSpecified(queueName);
 
