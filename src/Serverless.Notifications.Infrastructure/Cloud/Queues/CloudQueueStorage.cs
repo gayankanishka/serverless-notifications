@@ -1,31 +1,45 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Serverless.Notifications.Application.Common.Interfaces;
 
 namespace Serverless.Notifications.Infrastructure.Cloud.Queues
 {
+    /// <inheritdoc/>
     public class CloudQueueStorage : ICloudQueueStorage
     {
+        #region Private Fields
+
         private readonly string _connectionString;
-       
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructs with a storage account connection string.
+        /// </summary>
+        /// <param name="connectionString">A cloud storage connection string.</param>
         public CloudQueueStorage(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        /// <inheritdoc cref="SendMessageAsync"/>
+        #endregion
+
+        #region Queue Operations
+
+        /// <inheritdoc/>
         public async Task SendMessageAsync(string queueName, string message)
         {
-            if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(queueName))
-            {
-                return;
-            }
+            ThrowIfNotSpecified(queueName);
 
             QueueClient queueClient = CreateQueueClient(queueName);
             await queueClient.SendMessageAsync(message);
         }
 
+        /// <inheritdoc/>
         public async Task SendMessageToPoisonQueueAsync(string queueName, QueueMessage message)
         {
             QueueClient poisonQueueClient = await CreatePoisonQueueClientAsync(queueName);
@@ -34,48 +48,37 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Queues
             await DeleteMessagesAsync(queueName, message);
         }
 
-        /// <inheritdoc cref="ReceiveMessagesAsync"/>
+        /// <inheritdoc/>
         public async Task<QueueMessage[]> ReceiveMessagesAsync(string queueName, int messageCount = 32)
         {
-            if (string.IsNullOrWhiteSpace(queueName))
-            {
-                return new QueueMessage[0];
-            }
+            ThrowIfNotSpecified(queueName);
 
             QueueClient queueClient = CreateQueueClient(queueName);
             return await queueClient.ReceiveMessagesAsync(messageCount);
         }
 
-        /// <inheritdoc cref="PeekMessagesAsync"/>
+        /// <inheritdoc/>
         public async Task<PeekedMessage[]> PeekMessagesAsync(string queueName, int messageCount = 32)
         {
-            if (string.IsNullOrWhiteSpace(queueName))
-            {
-                return new PeekedMessage[0];
-            }
+            ThrowIfNotSpecified(queueName);
 
             QueueClient queueClient = CreateQueueClient(queueName);
             return await queueClient.PeekMessagesAsync(messageCount);
         }
 
-        /// <inheritdoc cref="DeleteMessagesAsync"/>
+        /// <inheritdoc/>
         public async Task DeleteMessagesAsync(string queueName, QueueMessage message)
         {
-            if (string.IsNullOrWhiteSpace(queueName))
-            {
-                return;
-            }
+            ThrowIfNotSpecified(queueName);
 
             QueueClient queueClient = CreateQueueClient(queueName);
             await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
         }
 
+        /// <inheritdoc/>
         public async Task<int> GetApproximateMessagesCount(string queueName)
         {
-            if (string.IsNullOrWhiteSpace(queueName))
-            {
-                return 0;
-            }
+            ThrowIfNotSpecified(queueName);
 
             QueueClient queueClient = CreateQueueClient(queueName);
             QueueProperties properties = await queueClient.GetPropertiesAsync();
@@ -83,25 +86,27 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Queues
             return properties.ApproximateMessagesCount;
         }
 
+        /// <inheritdoc/>
         public async Task CreateQueueIfNotExistsAsync(string queueName)
         {
-            if (string.IsNullOrWhiteSpace(queueName))
-            {
-                return;
-            }
+            ThrowIfNotSpecified(queueName);
 
             QueueClient queueClient = CreateQueueClient(queueName);
             await queueClient.CreateIfNotExistsAsync();
         }
 
+        #endregion
+
+        #region Helper Methods
+
         private QueueClient CreateQueueClient(string queueName)
         {
-           QueueClient queueClient = new QueueClient(_connectionString, queueName, new QueueClientOptions
-           {
+            QueueClient queueClient = new QueueClient(_connectionString, queueName, new QueueClientOptions
+            {
                 MessageEncoding = QueueMessageEncoding.Base64
-           });
+            });
 
-           return queueClient;
+            return queueClient;
         }
 
         private async Task<QueueClient> CreatePoisonQueueClientAsync(string queueName)
@@ -115,5 +120,15 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Queues
 
             return queueClient;
         }
+
+        private void ThrowIfNotSpecified(string queueName)
+        {
+            if (string.IsNullOrWhiteSpace(queueName))
+            {
+                throw new Exception("Queue name not specified");
+            }
+        }
+
+        #endregion
     }
 }

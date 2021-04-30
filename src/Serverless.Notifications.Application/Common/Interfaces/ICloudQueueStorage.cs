@@ -3,6 +3,9 @@ using Azure.Storage.Queues.Models;
 
 namespace Serverless.Notifications.Application.Common.Interfaces
 {
+    /// <summary>
+    /// Handles all the cloud queue related operations.
+    /// </summary>
     public interface ICloudQueueStorage
     {
         /// <summary>
@@ -14,7 +17,7 @@ namespace Serverless.Notifications.Application.Common.Interfaces
         Task SendMessageAsync(string queueName, string message);
 
         /// <summary>
-        /// Inserts a message into the queue.
+        /// Inserts a message into the poison queue.
         /// </summary>
         /// <param name="queueName">Name of the storage queue.</param>
         /// <param name="message">Actual message</param>
