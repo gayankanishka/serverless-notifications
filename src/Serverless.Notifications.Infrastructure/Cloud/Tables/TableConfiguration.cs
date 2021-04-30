@@ -22,7 +22,7 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Tables
             ConfigurationEntity config = await _cloudStorageTable
                 .GetTableEntityAsync<ConfigurationEntity>(key, partitionKey);
             
-            return config.ConfigurationValue;
+            return config?.ConfigurationValue;
         }
 
         public async Task<List<string>> GetAllSettingsAsync(string partitionKey)

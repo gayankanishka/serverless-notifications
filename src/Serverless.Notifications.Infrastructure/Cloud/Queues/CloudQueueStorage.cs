@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Serverless.Notifications.Application.Common.Interfaces;
@@ -84,13 +83,15 @@ namespace Serverless.Notifications.Infrastructure.Cloud.Queues
             return properties.ApproximateMessagesCount;
         }
 
-        public async Task CreateQueuesAsync(List<string> queueList)
+        public async Task CreateQueueIfNotExistsAsync(string queueName)
         {
-            foreach (string queue in queueList)
+            if (string.IsNullOrWhiteSpace(queueName))
             {
-                QueueClient queueClient = CreateQueueClient(queue);
-                await queueClient.CreateIfNotExistsAsync();
+                return;
             }
+
+            QueueClient queueClient = CreateQueueClient(queueName);
+            await queueClient.CreateIfNotExistsAsync();
         }
 
         private QueueClient CreateQueueClient(string queueName)

@@ -14,6 +14,6 @@ namespace Serverless.Notifications.Domain.TableEntities
             RowKey = rowKey;
         }
 
-        public string ConfigurationValue { get; }
+        public string ConfigurationValue { get; set; } = string.Empty;
     }
 }

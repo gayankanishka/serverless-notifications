@@ -51,5 +51,12 @@ namespace Serverless.Notifications.Application.Common.Interfaces
         /// <param name="queueName">Name of the storage queue.</param>
         /// <returns></returns>
         Task<int> GetApproximateMessagesCount(string queueName);
+
+        /// <summary>
+        /// Creates a storage queue with provided queue name.
+        /// </summary>
+        /// <param name="queueName">Name of the storage queue.</param>
+        /// <returns></returns>
+        Task CreateQueueIfNotExistsAsync(string queueName);
     }
 }

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Constants;
-using Serverless.Notifications.Domain.Enums;
 using Serverless.Notifications.Domain.Models;
 
 namespace Serverless.Notifications.Application.Services
@@ -21,11 +22,12 @@ namespace Serverless.Notifications.Application.Services
 
         public async Task RouteNotification(Notification notification, bool scheduleEnabled = true)
         {
+            string queueName;
 
             if (notification.IsScheduled && scheduleEnabled)
             {
                 string message = JsonConvert.SerializeObject(notification);
-                string queueName = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.ScheduleQueueName);
+                queueName = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.ScheduleQueueName);
 
                 await _cloudQueueStorage.SendMessageAsync(queueName, message);
                 return;
@@ -33,18 +35,17 @@ namespace Serverless.Notifications.Application.Services
 
             List<string> list = await _tableConfiguration.GetAllSettingsAsync("Queue");
 
-            list.ForEach(async queue =>
+            string expectedQueue = notification.NotificationType.ToString().ToLower();
+            queueName = list.FirstOrDefault(_ => _.Contains(expectedQueue));
+
+            if (string.IsNullOrWhiteSpace(queueName))
             {
-                switch (notification.NotificationType)
-                {
-                    case NotificationType.Sms:
-                        await _cloudQueueStorage.SendMessageAsync(queue, notification.Body);
-                        break;
-                    case NotificationType.Email:
-                        await _cloudQueueStorage.SendMessageAsync(queue, notification.Body);
-                        break;
-                }
-            });
+                throw new Exception("Expected queue not found", 
+                    new Exception("Please add the expected queue into configuration table"));
+            }
+
+            await _cloudQueueStorage.CreateQueueIfNotExistsAsync(queueName);
+            await _cloudQueueStorage.SendMessageAsync(queueName, notification.Body);
         }
     }
 }
