@@ -24,5 +24,20 @@
         /// The schedule processor queue name config.
         /// </summary>
         public const string ScheduleQueueName = "ScheduleQueue";
+
+        /// <summary>
+        /// The Twilio provided Account SID.
+        /// </summary>
+        public const string TwilioAccountSid = "Twilio.AccountSid";
+        
+        /// <summary>
+        /// The Twilio provided authentication token.
+        /// </summary>
+        public const string TwilioAuthToken = "Twilio.AuthToken";
+        
+        /// <summary>
+        /// The default Twilio from phone number.
+        /// </summary>
+        public const string TwilioDefaultFromNumber = "Twilio.DefaultFromNumber";
     }
 }
