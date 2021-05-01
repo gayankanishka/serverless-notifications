@@ -11,17 +11,40 @@ using Serverless.Notifications.Domain.Models;
 
 namespace Serverless.Notifications.AzureFunctions.Functions
 {
+    /// <summary>
+    /// The API controller to handle <see cref="Notification"/> related operation.
+    /// </summary>
     public class NotificationController
     {
+        #region Private Fields
+
         private readonly ICloudQueueStorage _cloudQueueStorage;
         private readonly ITableConfiguration _tableConfiguration;
 
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructs with DI.
+        /// </summary>
+        /// <param name="cloudQueueStorage"></param>
+        /// <param name="tableConfiguration"></param>
         public NotificationController(ICloudQueueStorage cloudQueueStorage, ITableConfiguration tableConfiguration)
         {
             _cloudQueueStorage = cloudQueueStorage;
             _tableConfiguration = tableConfiguration;
         }
 
+        #endregion
+
+        #region API endpoints
+
+        /// <summary>
+        /// Post request endpoint to ingest notifications into the application.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>The correlation ID of the notification.</returns>
         [FunctionName("PostNotifications")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "notifications")]
@@ -36,6 +59,8 @@ namespace Serverless.Notifications.AzureFunctions.Functions
 
             return new AcceptedResult("notifications", notification.Id);
         }
+
+        #endregion
     }
 }
 
