@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Serverless.Notifications.Application.Common.Interfaces
@@ -9,18 +10,17 @@ namespace Serverless.Notifications.Application.Common.Interfaces
     public interface ITableConfiguration
     {
         /// <summary>
-        /// Retrieve single configuration value by providing configuration key or partition key combined.
+        /// Retrieve single configuration value by providing configuration key.
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="partitionKey"></param>
         /// <returns>The configuration value.</returns>
-        Task<string> GetSettingAsync(string key, string partitionKey = null);
-        
+        Task<string> GetSettingAsync(string key);
+
         /// <summary>
-        /// Retrieve list of configuration values by providing the partition key.
+        /// Retrieve single configuration value by providing a lambda expresion.
         /// </summary>
-        /// <param name="partitionKey"></param>
-        /// <returns>A list of configuration values.</returns>
-        Task<List<string>> GetAllSettingsAsync(string partitionKey);
+        /// <param name="filter"></param>
+        /// <returns>The configuration value.</returns>
+        Task<string> GetSettingAsync(Func<KeyValuePair<string, string>, bool> filter);
     }
 }

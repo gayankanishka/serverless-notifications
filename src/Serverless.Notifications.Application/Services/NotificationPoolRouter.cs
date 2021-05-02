@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
@@ -44,17 +42,15 @@ namespace Serverless.Notifications.Application.Services
             if (notification.IsScheduled && scheduleEnabled)
             {
                 string message = JsonConvert.SerializeObject(notification);
-                queueName = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.ScheduleQueueName);
+                queueName = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.SCHEDULE_QUEUE_NAME);
 
                 await _cloudQueueStorage.SendMessageAsync(queueName, message);
                 return;
             }
-
-            List<string> list = await _tableConfiguration.GetAllSettingsAsync("Queue");
-
+            
             string expectedQueue = notification.NotificationType.ToString().ToLower();
-            queueName = list.FirstOrDefault(_ => _.Contains(expectedQueue));
-
+            queueName = await _tableConfiguration.GetSettingAsync(_ => _.Value.Contains(expectedQueue));
+            
             if (string.IsNullOrWhiteSpace(queueName))
             {
                 throw new Exception("Expected queue not found", 

@@ -34,10 +34,11 @@ namespace Serverless.Notifications.Infrastructure.Services
         /// <inheritdoc/>
         public async Task<MessageResource> SendAsync(Sms sms)
         {
-            string twilioAccountSid = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TwilioAccountSid);
-            string twilioAuthToken = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TwilioAuthToken);
+            string twilioAccountSid = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TWILIO_ACCOUNT_SID);
+            string twilioAuthToken = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TWILIO_AUTH_TOKEN);
+            
             string twilioFromNumber = string.IsNullOrWhiteSpace(sms.FromNumber)
-                ? await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TwilioDefaultFromNumber)
+                ? await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TWILIO_DEFAULT_FROM_NUMBER)
                 : sms.FromNumber;
                 
             TwilioClient.Init(twilioAccountSid, twilioAuthToken);

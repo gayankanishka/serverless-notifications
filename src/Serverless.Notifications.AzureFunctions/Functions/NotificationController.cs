@@ -54,7 +54,7 @@ namespace Serverless.Notifications.AzureFunctions.Functions
             string requestBody = await new StreamReader(request.Body).ReadToEndAsync();
             Notification notification = JsonConvert.DeserializeObject<Notification>(requestBody);
             
-            string queueName = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.NotificationPoolQueueName, "Queue");
+            string queueName = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.NOTIFICATION_POOL_QUEUE_NAME);
             await _cloudQueueStorage.SendMessageAsync(queueName, requestBody);
 
             return new AcceptedResult("notifications", notification.Id);

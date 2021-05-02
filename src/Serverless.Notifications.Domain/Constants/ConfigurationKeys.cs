@@ -8,36 +8,36 @@
         /// <summary>
         /// The notification pool queue name config.
         /// </summary>
-        public const string NotificationPoolQueueName = "NotificationPool";
+        public const string NOTIFICATION_POOL_QUEUE_NAME = "Queue.NotificationPool";
         
         /// <summary>
         /// The email processor queue name config.
         /// </summary>
-        public const string EmailQueueName = "EmailQueue";
+        public const string EMAIL_QUEUE_NAME = "Queue.EmailQueue";
         
         /// <summary>
         /// The sms processor queue name config.
         /// </summary>
-        public const string SmsQueueName = "SmsQueue";
+        public const string SMS_QUEUE_NAME = "Queue.SmsQueue";
         
         /// <summary>
         /// The schedule processor queue name config.
         /// </summary>
-        public const string ScheduleQueueName = "ScheduleQueue";
+        public const string SCHEDULE_QUEUE_NAME = "Queue.ScheduleQueue";
 
         /// <summary>
         /// The Twilio provided Account SID.
         /// </summary>
-        public const string TwilioAccountSid = "Twilio.AccountSid";
+        public const string TWILIO_ACCOUNT_SID = "Twilio.AccountSid";
         
         /// <summary>
         /// The Twilio provided authentication token.
         /// </summary>
-        public const string TwilioAuthToken = "Twilio.AuthToken";
+        public const string TWILIO_AUTH_TOKEN = "Twilio.AuthToken";
         
         /// <summary>
         /// The default Twilio from phone number.
         /// </summary>
-        public const string TwilioDefaultFromNumber = "Twilio.DefaultFromNumber";
+        public const string TWILIO_DEFAULT_FROM_NUMBER = "Twilio.DefaultFromNumber";
     }
 }
