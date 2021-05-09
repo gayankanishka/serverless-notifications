@@ -35,7 +35,7 @@ namespace Serverless.Notifications.AzureFunctions.Functions
         /// </summary>
         /// <param name="timer"></param>
         [FunctionName("ScheduleRunner")]
-        public async Task Run([TimerTrigger("* * * * *")] TimerInfo timer)
+        public async Task Run([TimerTrigger("0 1 * * *")] TimerInfo timer)
         {
             await _scheduleProcessor.ProcessQueueAsync();
         }
