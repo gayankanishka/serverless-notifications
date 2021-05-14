@@ -24,7 +24,17 @@ What's included:
 
 ## Quick Start
 
-After setting up your local DEV environment, you can clone this repository and run the solution. Make sure to configure the `local.settings.json` with the provided setting values.
+After setting up your local DEV environment, you can clone this repository and run the solution. Make sure to configure the `local.settings.json` with the provided setting values. If you are using a Azure storage account replace `AzureWebJobsStorage` value with storage account connection string.
+
+``` json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+  }
+}
+```
 
 ### Prerequisites
 
@@ -53,13 +63,22 @@ With Visual studio:
 
 Open up the solutions using Visual studio.
 
-- Add your Twilio Account SID and Auth KEY into config files in processor solution `Hint: Local.5Node.xml.. etc`.
-- Add your cloud storage connection string if any.
 - Restore solution `nuget` packages.
 - Rebuild solution once.
-- Publish solution using your desired publish profile.
-- Post endpoint to  [`Endpoint`](http://localhost:7071/api/notifications)
-- Post a proper message contract using swagger
+- Run the solution.
+- POST [`Endpoint`](http://localhost:7071/api/notifications)
+
+> Sample SMS notification request
+``` json
+
+{
+    "body": "{\"Id\":\"ed32ef8d-1b19-40cc-915b-b8ff1b4d6ff0\",\"FromNumber\":null,\"ToNumber\":\"+NUMBER_WITH_COUNTRY_CODE\",\"MessageBody\":\"Hello there\"}",
+    "notificationType": 1,
+    "isScheduled": false,
+    "scheduledDateTime":"2021-04-30T00:00:00"
+}
+
+```
 
 ## License
 
