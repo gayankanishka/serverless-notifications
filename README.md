@@ -55,7 +55,10 @@ First clone this repository locally.
 
 - Install all of the the prerequisite tools mentioned above.
 - Connect your Azure storage account into Azure storage explore [`link`](https://docs.microsoft.com/en-us/azure-stack/user/azure-stack-storage-connect-se?view=azs-1908) Or use default emulator storage account.
-- Add below Table storage configurations
+- Create `Configurations` table in table storage
+- Add below Table storage configurations to the created table
+
+![alt text](https://github.com/gayankanishka/serverless-notifications/blob/refactor/docs/configs.png?raw=true)
 
 ### Build and run from source
 
