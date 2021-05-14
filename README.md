@@ -1,5 +1,7 @@
 # Serverless Notifications Using Azure Functions + Twilio + SendGrid
 
+The solution implements a serverless notification framework. Azure functions are used to archive the serverless architecture. Twilio and sendgrid are used as the notification providers. Azure storages tables are used to store the application configurations. Azure Queue storage was used for internal comunication of the functions.
+
 ## Highlevel architecture diagram
 ![alt text](https://github.com/gayankanishka/serverless-notifications/blob/refactor/docs/Serverless-Notification-V1.png?raw=true)
 
