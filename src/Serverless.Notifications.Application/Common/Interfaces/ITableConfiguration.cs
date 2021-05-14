@@ -17,7 +17,7 @@ namespace Serverless.Notifications.Application.Common.Interfaces
         Task<string> GetSettingAsync(string key);
 
         /// <summary>
-        /// Retrieve single configuration value by providing a lambda expresion.
+        /// Retrieve single configuration value by providing a lambda expression.
         /// </summary>
         /// <param name="filter"></param>
         /// <returns>The configuration value.</returns>
