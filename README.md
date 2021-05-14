@@ -41,10 +41,8 @@ After setting up your local DEV environment, you can clone this repository and r
 
 You'll need the following tools:
 
-- [Azure Service Fabric SDK](https://docs.microsoft.com/en-us/azure/service-fabric/service-fabric-get-started)
 - [Azure Storage Emulator](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-emulator)
 - [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/)
-- [Git](https://git-scm.com/downloads)
 - [.NET](https://dotnet.microsoft.com/download), version `>=5`
 - [Visual Studio](https://visualstudio.microsoft.com/), version `>=2019`
 - [Twilio Trial Account](https://www.twilio.com/try-twilio)
