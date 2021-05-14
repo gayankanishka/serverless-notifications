@@ -2,27 +2,33 @@
 using Microsoft.Extensions.DependencyInjection;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Infrastructure.Cloud.Queues;
+using Serverless.Notifications.Infrastructure.Cloud.Tables;
 using Serverless.Notifications.Infrastructure.Services;
 
 namespace Serverless.Notifications.Infrastructure
 {
+    /// <summary>
+    /// Dependency injection extension to configure Infrastructure layer services.
+    /// </summary>
     public static class DependencyInjection
     {
+        /// <summary>
+        /// Configure Infrastructure layer services.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             string connectionString = configuration.GetSection("AzureWebJobsStorage").Value;
 
-            services.AddScoped<INotificationPoolQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "notification-pool"));
+            services.AddTransient<ICloudStorageTable, CloudStorageTable>(_ =>
+                new CloudStorageTable(connectionString));
+            
+            services.AddSingleton<ITableConfiguration, TableConfiguration>();
 
-            services.AddScoped<INotificationScheduleQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "scheduled-notifications"));
-
-            services.AddScoped<ISmsQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "sms"));
-
-            services.AddScoped<IEmailQueue, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString, "email"));
+            services.AddScoped<ICloudQueueStorage, CloudQueueStorage>(_ =>
+                new CloudQueueStorage(connectionString));
 
             services.AddScoped<ITwilioSmsService, TwilioSmsService>();
 

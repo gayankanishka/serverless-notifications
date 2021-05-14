@@ -1,34 +1,55 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Threading.Tasks;
 using Serverless.Notifications.Application.Common.Interfaces;
+using Serverless.Notifications.Domain.Constants;
 using Serverless.Notifications.Domain.Models;
-using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 
 namespace Serverless.Notifications.Infrastructure.Services
 {
+    /// <inheritdoc/>
     public class TwilioSmsService : ITwilioSmsService
     {
-        private readonly string _accountSid;
-        private readonly string _authToken;
-        private readonly string _twilioFromNumber;
+        #region Private Fields
+        
+        private readonly ITableConfiguration _tableConfiguration;
 
-        public TwilioSmsService(IConfiguration configuration)
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructs with DI.
+        /// </summary>
+        /// <param name="tableConfiguration"></param>
+        public TwilioSmsService(ITableConfiguration tableConfiguration)
         {
-            _accountSid = configuration.GetSection("TWILIO_ACCOUNT_SID").Value;
-            _authToken = configuration.GetSection("TWILIO_AUTH_TOKEN").Value;
-            _twilioFromNumber = configuration.GetSection("TWILIO_FROM_NUMBER").Value;
+            _tableConfiguration = tableConfiguration;
         }
 
+        #endregion
+
+        #region Twilio Operations
+
+        /// <inheritdoc/>
         public async Task<MessageResource> SendAsync(Sms sms)
         {
-            TwilioClient.Init(_accountSid, _authToken);
+            string twilioAccountSid = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TWILIO_ACCOUNT_SID);
+            string twilioAuthToken = await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TWILIO_AUTH_TOKEN);
+            
+            string twilioFromNumber = string.IsNullOrWhiteSpace(sms.FromNumber)
+                ? await _tableConfiguration.GetSettingAsync(ConfigurationKeys.TWILIO_DEFAULT_FROM_NUMBER)
+                : sms.FromNumber;
+                
+            TwilioClient.Init(twilioAccountSid, twilioAuthToken);
 
             return await MessageResource.CreateAsync(
                 body: sms.MessageBody,
-                from: new Twilio.Types.PhoneNumber(string.IsNullOrWhiteSpace(sms.FromNumber) ? _twilioFromNumber : sms.FromNumber),
+                from: new Twilio.Types.PhoneNumber(twilioFromNumber),
                 to: new Twilio.Types.PhoneNumber(sms.ToNumber)
             );
         }
+
+        #endregion
     }
 }

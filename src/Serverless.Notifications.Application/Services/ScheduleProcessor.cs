@@ -1,30 +1,49 @@
-﻿using Azure.Storage.Queues.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Azure.Storage.Queues.Models;
 using Newtonsoft.Json;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Serverless.Notifications.Application.Services
 {
+    /// <inheritdoc/>
     public class ScheduleProcessor : IScheduleProcessor
     {
-        private readonly INotificationScheduleQueue _notificationScheduleQueue;
+        #region Private Fields
+
+        private const string SCHEDULE_QUEUE_NAME = "scheduled-notifications";
+
+        private readonly ICloudQueueStorage _cloudQueueStorage;
         private readonly INotificationPoolRouter _notificationPoolRouter;
 
-        public ScheduleProcessor(INotificationScheduleQueue notificationScheduleQueue, INotificationPoolRouter notificationPoolRouter)
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructs with DI.
+        /// </summary>
+        /// <param name="cloudQueueStorage"></param>
+        /// <param name="notificationPoolRouter"></param>
+        public ScheduleProcessor(ICloudQueueStorage cloudQueueStorage, INotificationPoolRouter notificationPoolRouter)
         {
-            _notificationScheduleQueue = notificationScheduleQueue;
+            _cloudQueueStorage = cloudQueueStorage;
             _notificationPoolRouter = notificationPoolRouter;
         }
 
+        #endregion
+
+        #region Schedule Processor operations
+
+        /// <inheritdoc/>
         public async Task ProcessQueueAsync()
         {
             while (true)
             {
                 List<Task> tasks = new List<Task>();
-                QueueMessage[] messages = await _notificationScheduleQueue.ReceiveMessagesAsync();
+                QueueMessage[] messages = await _cloudQueueStorage.ReceiveMessagesAsync(SCHEDULE_QUEUE_NAME);
 
                 foreach (QueueMessage message in messages)
                 {
@@ -33,20 +52,24 @@ namespace Serverless.Notifications.Application.Services
 
                 await Task.WhenAll(tasks);
 
-                PeekedMessage[] peekedMessages = await _notificationScheduleQueue.PeekMessagesAsync();
+                PeekedMessage[] peekedMessages = await _cloudQueueStorage.PeekMessagesAsync(SCHEDULE_QUEUE_NAME);
 
-                if (await _notificationScheduleQueue.GetApproximateMessagesCount() == 0 || peekedMessages.Length == 0)
+                if (await _cloudQueueStorage.GetApproximateMessagesCountAsync(SCHEDULE_QUEUE_NAME) == 0 || peekedMessages.Length == 0)
                 {
                     break;
                 }
             }
         }
 
+        #endregion
+
+        #region Helper Methods
+
         private async Task ProcessMessageAsync(QueueMessage message)
         {
             if (message.DequeueCount >= 5)
             {
-                await _notificationScheduleQueue.SendMessageToPoisonQueueAsync(message);
+                await _cloudQueueStorage.SendMessageToPoisonQueueAsync(SCHEDULE_QUEUE_NAME, message);
                 return;
             }
 
@@ -57,9 +80,11 @@ namespace Serverless.Notifications.Application.Services
                 return;
             }
 
-            await _notificationPoolRouter.RouteNotification(notification, false);
+            await _notificationPoolRouter.RouteNotificationAsync(notification, false);
 
-            await _notificationScheduleQueue.DeleteMessagesAsync(message);
+            await _cloudQueueStorage.DeleteMessagesAsync(SCHEDULE_QUEUE_NAME, message);
         }
+
+        #endregion
     }
 }

@@ -1,97 +1,134 @@
-﻿using Azure.Storage.Queues;
+﻿using System;
+using System.Threading.Tasks;
+using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Serverless.Notifications.Application.Common.Interfaces;
-using System.Threading.Tasks;
 
 namespace Serverless.Notifications.Infrastructure.Cloud.Queues
 {
-    public class CloudQueueStorage : INotificationPoolQueue, IEmailQueue, ISmsQueue, INotificationScheduleQueue
+    /// <inheritdoc/>
+    public class CloudQueueStorage : ICloudQueueStorage
     {
-        private readonly QueueClient _queueClient;
-        private readonly QueueClient _poisonQueueClient;
+        #region Private Fields
 
-        public CloudQueueStorage(string connectionString, string queueName)
+        private readonly string _connectionString;
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructs with a storage account connection string.
+        /// </summary>
+        /// <param name="connectionString">A cloud storage connection string.</param>
+        public CloudQueueStorage(string connectionString)
         {
-            _queueClient = new QueueClient(connectionString, queueName, new QueueClientOptions
-            {
-                MessageEncoding = QueueMessageEncoding.Base64
-            });
-
-            _poisonQueueClient = new QueueClient(connectionString, $"{queueName}-poison", new QueueClientOptions
-            {
-                MessageEncoding = QueueMessageEncoding.Base64
-            });
+            _connectionString = connectionString;
         }
 
-        /// <inheritdoc cref="SendMessageAsync"/>
-        public async Task SendMessageAsync(string message)
+        #endregion
+
+        #region Queue Operations
+
+        /// <inheritdoc/>
+        public async Task SendMessageAsync(string queueName, string message)
         {
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                return;
-            }
+            ThrowIfNotSpecified(queueName);
 
-            await _queueClient.CreateIfNotExistsAsync();
-
-            if (await _queueClient.ExistsAsync())
-            {
-                await _queueClient.SendMessageAsync(message);
-            }
+            QueueClient queueClient = CreateQueueClient(queueName);
+            await queueClient.SendMessageAsync(message);
         }
 
-        public async Task SendMessageToPoisonQueueAsync(QueueMessage message)
+        /// <inheritdoc/>
+        public async Task SendMessageToPoisonQueueAsync(string queueName, QueueMessage message)
         {
-            await _poisonQueueClient.CreateIfNotExistsAsync();
+            QueueClient poisonQueueClient = await CreatePoisonQueueClientAsync(queueName);
 
-            if (await _poisonQueueClient.ExistsAsync())
-            {
-                await _poisonQueueClient.SendMessageAsync(message.Body);
-                await DeleteMessagesAsync(message);
-            }
+            await poisonQueueClient.SendMessageAsync(message.Body);
+            await DeleteMessagesAsync(queueName, message);
         }
 
-        /// <inheritdoc cref="ReceiveMessagesAsync"/>
-        public async Task<QueueMessage[]> ReceiveMessagesAsync(int messageCount = 32)
+        /// <inheritdoc/>
+        public async Task<QueueMessage[]> ReceiveMessagesAsync(string queueName, int messageCount = 32)
         {
-            if (await _queueClient.ExistsAsync())
-            {
-                return await _queueClient.ReceiveMessagesAsync(messageCount);
-            }
+            ThrowIfNotSpecified(queueName);
 
-            return null;
+            QueueClient queueClient = CreateQueueClient(queueName);
+            return await queueClient.ReceiveMessagesAsync(messageCount);
         }
 
-        /// <inheritdoc cref="PeekMessagesAsync"/>
-        public async Task<PeekedMessage[]> PeekMessagesAsync(int messageCount = 32)
+        /// <inheritdoc/>
+        public async Task<PeekedMessage[]> PeekMessagesAsync(string queueName, int messageCount = 32)
         {
-            if (await _queueClient.ExistsAsync())
-            {
-                return await _queueClient.PeekMessagesAsync(messageCount);
-            }
+            ThrowIfNotSpecified(queueName);
 
-            return null;
+            QueueClient queueClient = CreateQueueClient(queueName);
+            return await queueClient.PeekMessagesAsync(messageCount);
         }
 
-        /// <inheritdoc cref="DeleteMessagesAsync"/>
-        public async Task DeleteMessagesAsync(QueueMessage message)
+        /// <inheritdoc/>
+        public async Task DeleteMessagesAsync(string queueName, QueueMessage message)
         {
-            if (await _queueClient.ExistsAsync())
-            {
-                await _queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
+            ThrowIfNotSpecified(queueName);
 
-            }
+            QueueClient queueClient = CreateQueueClient(queueName);
+            await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
         }
 
-        public async Task<int> GetApproximateMessagesCount()
+        /// <inheritdoc/>
+        public async Task<int> GetApproximateMessagesCountAsync(string queueName)
         {
-            if (!await _queueClient.ExistsAsync())
-            {
-                return 0;
-            }
+            ThrowIfNotSpecified(queueName);
 
-            QueueProperties properties = await _queueClient.GetPropertiesAsync();
+            QueueClient queueClient = CreateQueueClient(queueName);
+            QueueProperties properties = await queueClient.GetPropertiesAsync();
 
             return properties.ApproximateMessagesCount;
         }
+
+        /// <inheritdoc/>
+        public async Task CreateQueueIfNotExistsAsync(string queueName)
+        {
+            ThrowIfNotSpecified(queueName);
+
+            QueueClient queueClient = CreateQueueClient(queueName);
+            await queueClient.CreateIfNotExistsAsync();
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        private QueueClient CreateQueueClient(string queueName)
+        {
+            QueueClient queueClient = new QueueClient(_connectionString, queueName, new QueueClientOptions
+            {
+                MessageEncoding = QueueMessageEncoding.Base64
+            });
+
+            return queueClient;
+        }
+
+        private async Task<QueueClient> CreatePoisonQueueClientAsync(string queueName)
+        {
+            QueueClient queueClient = new QueueClient(_connectionString, $"{queueName}-poison", new QueueClientOptions
+            {
+                MessageEncoding = QueueMessageEncoding.Base64
+            });
+
+            await queueClient.CreateIfNotExistsAsync();
+
+            return queueClient;
+        }
+
+        private void ThrowIfNotSpecified(string queueName)
+        {
+            if (string.IsNullOrWhiteSpace(queueName))
+            {
+                throw new Exception("Queue name not specified");
+            }
+        }
+
+        #endregion
     }
 }
