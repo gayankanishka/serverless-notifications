@@ -1,8 +1,8 @@
 # Serverless Notifications Using Azure Functions + Twilio + SendGrid
 
-The solution implements a serverless notification framework. Azure functions are used to archive the serverless architecture. Twilio and sendgrid are used as the notification providers. Azure storages tables are used to store the application configurations. Azure Queue storage was used for internal comunication of the functions. One single `POST` endpoint was provided to send out the notifications `HINT: /api/notifications`.
+The solution implements a serverless notification framework. Azure functions are used to archive the serverless architecture. Twilio and sendgrid are used as the notification providers. Azure storages tables are used to store the application configurations. Azure Queue storage was used for internal communication of the functions. One single `POST` endpoint was provided to send out the notifications `HINT: /api/notifications`.
 
-## Highlevel architecture diagram
+## High-level architecture diagram
 
 ![alt text](https://github.com/gayankanishka/serverless-notifications/blob/refactor/docs/Serverless-Notification-V1.png?raw=true)
 
@@ -27,7 +27,7 @@ What's included:
 
 After setting up your local DEV environment, you can clone this repository and run the solution. Make sure to configure the `local.settings.json` with the provided setting values. If you are using a Azure storage account replace `AzureWebJobsStorage` value with storage account connection string.
 
-``` json
+```json
 {
   "IsEncrypted": false,
   "Values": {
@@ -72,15 +72,14 @@ Open up the solutions using Visual studio.
 - POST [`Endpoint`](http://localhost:7071/api/notifications)
 
 > Sample SMS notification request
-``` json
 
+```json
 {
-    "body": "{\"Id\":\"ed32ef8d-1b19-40cc-915b-b8ff1b4d6ff0\",\"FromNumber\":null,\"ToNumber\":\"+NUMBER_WITH_COUNTRY_CODE\",\"MessageBody\":\"Hello there\"}",
-    "notificationType": 1,
-    "isScheduled": false,
-    "scheduledDateTime":"2021-04-30T00:00:00"
+  "body": "{\"Id\":\"ed32ef8d-1b19-40cc-915b-b8ff1b4d6ff0\",\"FromNumber\":null,\"ToNumber\":\"+NUMBER_WITH_COUNTRY_CODE\",\"MessageBody\":\"Hello there\"}",
+  "notificationType": 1,
+  "isScheduled": false,
+  "scheduledDateTime": "2021-04-30T00:00:00"
 }
-
 ```
 
 ## License
