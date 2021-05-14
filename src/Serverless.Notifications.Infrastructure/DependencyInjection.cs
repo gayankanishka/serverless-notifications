@@ -22,7 +22,7 @@ namespace Serverless.Notifications.Infrastructure
         {
             string connectionString = configuration.GetSection("AzureWebJobsStorage").Value;
 
-            services.AddSingleton<ICloudStorageTable, CloudStorageTable>(_ =>
+            services.AddTransient<ICloudStorageTable, CloudStorageTable>(_ =>
                 new CloudStorageTable(connectionString));
             
             services.AddSingleton<ITableConfiguration, TableConfiguration>();
