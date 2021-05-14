@@ -4,7 +4,7 @@ The solution implements a serverless notification framework. Azure functions are
 
 ## High-level architecture diagram
 
-![alt text](https://github.com/gayankanishka/serverless-notifications/blob/refactor/docs/Serverless-Notification-V1.png?raw=true)
+![alt text](https://github.com/gayankanishka/serverless-notifications/blob/main/docs/Serverless-Notification-V1.png?raw=true)
 
 What's included:
 
@@ -59,7 +59,7 @@ First clone this repository locally.
 - Create `Configurations` table in table storage
 - Add below Table storage configurations to the created table
 
-![alt text](https://github.com/gayankanishka/serverless-notifications/blob/refactor/docs/configs.PNG?raw=true)
+![alt text](https://github.com/gayankanishka/serverless-notifications/blob/main/docs/configs.PNG?raw=true)
 
 ### Build and run from source
 
