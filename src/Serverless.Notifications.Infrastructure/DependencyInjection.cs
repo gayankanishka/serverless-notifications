@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SendGrid.Extensions.DependencyInjection;
 using Serverless.Notifications.Application.Common.Interfaces;
 using Serverless.Notifications.Infrastructure.Cloud.Queues;
 using Serverless.Notifications.Infrastructure.Cloud.Tables;
@@ -30,7 +31,10 @@ public static class DependencyInjection
         services.AddScoped<ICloudQueueStorage, CloudQueueStorage>(_ =>
             new CloudQueueStorage(connectionString));
 
+        services.AddSendGrid(x => { x.ApiKey = configuration["SendGrid:ApiKey"]; });
+
         services.AddScoped<ITwilioSmsService, TwilioSmsService>();
+        services.AddScoped<ISendGridService, SendGridService>();
 
         return services;
     }

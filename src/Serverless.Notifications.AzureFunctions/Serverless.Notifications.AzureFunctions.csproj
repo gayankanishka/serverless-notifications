@@ -7,16 +7,16 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-        <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-        <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
+        <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0"/>
+        <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Serverless.Notifications.Application\Serverless.Notifications.Application.csproj" />
-        <ProjectReference Include="..\Serverless.Notifications.Domain\Serverless.Notifications.Domain.csproj" />
-        <ProjectReference Include="..\Serverless.Notifications.Infrastructure\Serverless.Notifications.Infrastructure.csproj" />
+        <ProjectReference Include="..\Serverless.Notifications.Application\Serverless.Notifications.Application.csproj"/>
+        <ProjectReference Include="..\Serverless.Notifications.Domain\Serverless.Notifications.Domain.csproj"/>
+        <ProjectReference Include="..\Serverless.Notifications.Infrastructure\Serverless.Notifications.Infrastructure.csproj"/>
     </ItemGroup>
     <ItemGroup>
         <None Update="host.json">
