@@ -1,16 +1,15 @@
 ﻿using System.Threading.Tasks;
 
-namespace Serverless.Notifications.Application.Common.Interfaces
+namespace Serverless.Notifications.Application.Common.Interfaces;
+
+/// <summary>
+///     Handles all the scheduled message operations.
+/// </summary>
+public interface IScheduleProcessor
 {
     /// <summary>
-    /// Handles all the scheduled message operations.
+    ///     Processes the scheduled queue message depending on the date.
     /// </summary>
-    public interface IScheduleProcessor
-    {
-        /// <summary>
-        /// Processes the scheduled queue message depending on the date.
-        /// </summary>
-        /// <returns></returns>
-        Task ProcessQueueAsync();
-    }
+    /// <returns></returns>
+    Task ProcessQueueAsync();
 }

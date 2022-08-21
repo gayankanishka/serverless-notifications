@@ -5,34 +5,33 @@ using Serverless.Notifications.Infrastructure.Cloud.Queues;
 using Serverless.Notifications.Infrastructure.Cloud.Tables;
 using Serverless.Notifications.Infrastructure.Services;
 
-namespace Serverless.Notifications.Infrastructure
+namespace Serverless.Notifications.Infrastructure;
+
+/// <summary>
+///     Dependency injection extension to configure Infrastructure layer services.
+/// </summary>
+public static class DependencyInjection
 {
     /// <summary>
-    /// Dependency injection extension to configure Infrastructure layer services.
+    ///     Configure Infrastructure layer services.
     /// </summary>
-    public static class DependencyInjection
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        /// <summary>
-        /// Configure Infrastructure layer services.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-        {
-            string connectionString = configuration.GetSection("AzureWebJobsStorage").Value;
+        var connectionString = configuration.GetSection("AzureWebJobsStorage").Value;
 
-            services.AddTransient<ICloudStorageTable, CloudStorageTable>(_ =>
-                new CloudStorageTable(connectionString));
-            
-            services.AddSingleton<ITableConfiguration, TableConfiguration>();
+        services.AddTransient<ICloudStorageTable, CloudStorageTable>(_ =>
+            new CloudStorageTable(connectionString));
 
-            services.AddScoped<ICloudQueueStorage, CloudQueueStorage>(_ =>
-                new CloudQueueStorage(connectionString));
+        services.AddSingleton<ITableConfiguration, TableConfiguration>();
 
-            services.AddScoped<ITwilioSmsService, TwilioSmsService>();
+        services.AddScoped<ICloudQueueStorage, CloudQueueStorage>(_ =>
+            new CloudQueueStorage(connectionString));
 
-            return services;
-        }
+        services.AddScoped<ITwilioSmsService, TwilioSmsService>();
+
+        return services;
     }
 }
